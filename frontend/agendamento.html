@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento - BH Notebooks</title>
+  <link rel="stylesheet" href="css/notifications.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Estilos da barra de navegação */
+    .navbar {
+      width: 100%;
+      background-color: #00A82D;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    
+    .navbar-logo:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-links {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .navbar-login {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-login:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* Formulário */
+    .form-container {
+      background: white;
+      padding: 50px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+
+    .form-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #00A82D;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .form-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1em;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #00A82D;
+      box-shadow: 0 0 0 3px rgba(0, 168, 45, 0.1);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #999;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group input[type="file"] {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .form-group input[type="file"]::file-selector-button {
+      padding: 8px 16px;
+      background: #00A82D;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 10px;
+      transition: background 0.3s;
+    }
+
+    .form-group input[type="file"]::file-selector-button:hover {
+      background: #008a25;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 5px;
+      color: #666;
+      font-size: 0.85em;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: #00A82D;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: #008a25;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 168, 45, 0.3);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .agendamento-msg {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 600;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 30px 20px;
+      }
+
+      .form-title {
+        font-size: 1.8em;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegação -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">BH Notebooks</a>
+      <div class="navbar-links">
+        <a href="minhas-ordens.html" class="navbar-login">Minhas Ordens</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    
+    <!-- Formulário -->
+    <div class="form-container">
+      <h1 class="form-title">Agendar Manutenção</h1>
+      <p class="form-subtitle">Preencha os dados do seu equipamento e escolha a data desejada</p>
+
+      <form id="formAgendamento" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" name="data" min="" required>
+          </div>
+
+          <div class="form-group">
+            <label for="horario">Horário</label>
+            <select id="horario" name="horario" required>
+              <option value="">Selecione o horário</option>
+              <option value="08:30">08:30</option>
+              <option value="09:00">09:00</option>
+              <option value="09:30">09:30</option>
+              <option value="10:00">10:00</option>
+              <option value="10:30">10:30</option>
+              <option value="11:00">11:00</option>
+              <option value="11:30">11:30</option>
+              <option value="12:00">12:00</option>
+              <option value="12:30">12:30</option>
+              <option value="13:00">13:00</option>
+              <option value="13:30">13:30</option>
+              <option value="14:00">14:00</option>
+              <option value="14:30">14:30</option>
+              <option value="15:00">15:00</option>
+              <option value="15:30">15:30</option>
+              <option value="16:00">16:00</option>
+              <option value="16:30">16:30</option>
+              <option value="17:00">17:00</option>
+              <option value="17:30">17:30</option>
+             
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="marca">Marca</label>
+            <input type="text" id="marca" name="marca" placeholder="Ex: Dell, HP, Lenovo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" name="modelo" placeholder="Ex: Inspiron 15, ThinkPad" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="serial">Número de Série (Opcional)</label>
+          <input type="text" id="serial" name="serial" placeholder="Digite o número de série">
+        </div>
+
+        <div class="form-group">
+          <label for="tipo">Tipo de Manutenção</label>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecione o tipo</option>
+            <option value="preventiva">Preventiva</option>
+            <option value="corretiva">Corretiva</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="descricao">Descrição do Problema (Opcional)</label>
+          <textarea id="descricao" name="descricao" placeholder="Descreva o defeito ou problema que está enfrentando"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imagem">Fotos do Equipamento (Opcional)</label>
+          <input type="file" id="imagem" name="imagem" multiple accept="image/*">
+          <small style="display: block; margin-top: 5px; color: #666; font-size: 0.85em;">Você pode selecionar até 5 fotos</small>
+          <div id="preview-container" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;"></div>
+        </div>
+        <button type="submit" class="btn-submit">Agendar Manutenção</button>
+        <div id="agendamento-msg" class="agendamento-msg" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Configura a data mínima como hoje
+    const dataInput = document.getElementById("data");
+    const hoje = new Date();
+    const dataMinima = hoje.toISOString().split('T')[0];
+    dataInput.setAttribute('min', dataMinima);
+
+    // Função para verificar se é sábado ou domingo
+    function isWeekend(dateString) {
+      if (!dateString) return false;
+      // Adiciona o timezone para evitar problemas de fuso horário
+      const date = new Date(dateString + 'T12:00:00');
+      const day = date.getDay();
+      return day === 0 || day === 6; // 0 = domingo, 6 = sábado
+    }
+
+    // Função para validar e limpar se for fim de semana
+    function validateDate() {
+      const selectedDate = dataInput.value;
+      if (selectedDate && isWeekend(selectedDate)) {
+        alert("Não é possível agendar manutenções aos sábados e domingos. Por favor, escolha outro dia.");
+        dataInput.value = '';
+        dataInput.focus();
+        return false;
+      }
+      return true;
+    }
+
+    // Validação ao selecionar data (múltiplos eventos para garantir)
+    dataInput.addEventListener('change', validateDate);
+    dataInput.addEventListener('input', function() {
+      // Valida após um pequeno delay para garantir que o valor foi atualizado
+      setTimeout(validateDate, 100);
+    });
+    dataInput.addEventListener('blur', validateDate);
+
+    // Ao selecionar data, buscar horários já ocupados e desabilitar opções
+    async function atualizarHorariosOcupados() {
+      const selected = dataInput.value;
+      const horarioSelect = document.getElementById('horario');
+      // Habilita tudo primeiro
+      Array.from(horarioSelect.options).forEach(opt => opt.disabled = false);
+      if (!selected) return;
+      try {
+        const resp = await fetch(`http://localhost:3000/agendamentos?data=${encodeURIComponent(selected)}`);
+        if (!resp.ok) {
+          console.warn('Erro ao buscar agendamentos:', resp.status);
+          return;
+        }
+        const json = await resp.json();
+        const ocupados = json.horarios || [];
+        // Desabilitar opções que estão ocupadas
+        Array.from(horarioSelect.options).forEach(opt => {
+          if (opt.value && ocupados.includes(opt.value)) {
+            opt.disabled = true;
+            // se estiver selecionado atualmente, limpar seleção
+            if (horarioSelect.value === opt.value) horarioSelect.value = '';
+          }
+        });
+      } catch (err) {
+        console.error('Erro ao atualizar horários ocupados:', err);
+      }
+    }
+
+    dataInput.addEventListener('change', atualizarHorariosOcupados);
+    dataInput.addEventListener('input', () => setTimeout(atualizarHorariosOcupados, 150));
+
+    // Verifica se o usuário está logado
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      // Redireciona para a página de login com a URL de retorno
+      const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href = `login.html?returnUrl=${returnUrl}&message=${encodeURIComponent('Você precisa fazer login para acessar esta página!')}&messageType=error`;
+    }
+
+    // Função para exibir preview das imagens selecionadas
+    document.getElementById('imagem').addEventListener('change', function(e) {
+      const previewContainer = document.getElementById('preview-container');
+      previewContainer.innerHTML = ''; // Limpa previews anteriores
+      
+      if (this.files.length > 5) {
+        alert('Você pode selecionar no máximo 5 imagens.');
+        this.value = ''; // Limpa a seleção
+        return;
+      }
+      
+      Array.from(this.files).forEach(file => {
+        if (!file.type.startsWith('image/')) {
+          alert(`O arquivo ${file.name} não é uma imagem válida.`);
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.maxWidth = '100px';
+          img.style.maxHeight = '100px';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '4px';
+          img.style.margin = '5px';
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Adiciona o script de notificações
+    const script = document.createElement('script');
+    script.src = 'js/notifications.js';
+    document.body.appendChild(script);
+
+    document.getElementById("formAgendamento").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Validação final: verifica se a data selecionada não é sábado ou domingo
+      const selectedDate = document.getElementById("data").value;
+      if (!selectedDate) {
+        alert("Por favor, selecione uma data.");
+        return;
+      }
+      
+      if (isWeekend(selectedDate)) {
+        alert("Não é possível agendar manutenções aos sábados e domingos. Por favor, escolha outro dia.");
+        document.getElementById("data").value = '';
+        document.getElementById("data").focus();
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('.btn-submit');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Agendando...';
+      submitBtn.disabled = true;
+
+      function showMsg(text, ok=true) {
+        // Usa o novo sistema de notificações
+        document.showNotification(text, ok ? 'success' : 'error');
+      }
+
+      try {
+        const formData = new FormData(e.target);
+        formData.append("clienteId", localStorage.getItem("userId") || "");
+
+        // Normaliza anexos de imagem: remove quaisquer entradas "imagem"
+        // já presentes no FormData e re-anexa a seleção atual (limite 5)
+        const fileInput = document.getElementById('imagem');
+        // Remove imagens antigas do FormData (se houver)
+        formData.delete('imagem');
+        if (fileInput && fileInput.files.length > 5) {
+          throw new Error('Você pode enviar no máximo 5 imagens.');
+        }
+        if (fileInput && fileInput.files.length > 0) {
+          Array.from(fileInput.files).forEach(file => {
+            formData.append('imagem', file);
+          });
+        }
+
+        const resp = await fetch("http://localhost:3000/agendar", {
+          method: "POST",
+          body: formData
+          // Não defina o cabeçalho Content-Type, o navegador irá configurá-lo automaticamente
+        });
+
+        // Lê a resposta apenas uma vez
+        let responseData;
+        try {
+          responseData = await resp.json();
+        } catch (e) {
+          // Se não for JSON, lê como texto
+          const errorText = await resp.text();
+          if (errorText.includes('<html') || errorText.includes('<!DOCTYPE')) {
+            const errorMatch = errorText.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            responseData = { erro: errorMatch ? 
+              errorMatch[1].replace(/<[^>]*>/g, '').trim() : 
+              'O servidor retornou uma página de erro' };
+          } else {
+            responseData = { erro: errorText.substring(0, 100) };
+          }
+        }
+
+        // Verifica o status
+        if (!resp.ok) {
+          const errorMessage = responseData.erro || responseData.message || 'Erro ao processar o agendamento.';
+          
+          // Conflito de horário
+          if (resp.status === 409) {
+            showMsg(errorMessage, false);
+            atualizarHorariosOcupados();
+            return;
+          }
+          showMsg(errorMessage, false);
+          return;
+        }
+
+        // Sucesso
+        showMsg(responseData.mensagem || 'Agendamento realizado com sucesso!', true);
+        e.target.reset();
+        document.getElementById('preview-container').innerHTML = ''; // Limpa o preview
+      } catch (erro) {
+        console.error("Erro ao enviar agendamento:", erro);
+        showMsg(erro.message || 'Erro ao conectar com o servidor. Verifique se o servidor está rodando.', false);
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+    
+    // Garantir que, ao abrir a página, se já houver uma data preenchida, atualizamos horários
+    if (dataInput.value) {
+      setTimeout(atualizarHorariosOcupados, 150);
+    }
+  </script>
+  <!-- Removido o botão de logout global -->
+</body>
+</html>

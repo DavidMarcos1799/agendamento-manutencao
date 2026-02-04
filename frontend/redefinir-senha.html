@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha - BH Notebooks</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/reset-password.css">
+  <style>
+    /* Estilos inline adicionais */
+    /* Estilos para o sistema de notificações */
+    .message-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 15px 25px;
+      border-radius: 4px;
+      color: white;
+      font-weight: 500;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      max-width: 90%;
+      width: auto;
+    }
+    
+    .message-container.show {
+      opacity: 1;
+      animation: slideIn 0.3s ease-out forwards;
+    }
+    
+    .message-container.error {
+      background-color: #f44336;
+    }
+    
+    .message-container.success {
+      background-color: #4CAF50;
+    }
+    
+    .message-container.warning {
+      background-color: #ff9800;
+      color: #000;
+    }
+    
+    .message-container.info {
+      background-color: #2196F3;
+    }
+    
+    /* Animações */
+    @keyframes slideIn {
+      from { transform: translate(-50%, -30px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Barra de navegação */
+    .navbar {
+      width: 100%;
+      background-color: #00A82D;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+    }
+    
+    .navbar-logo:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Container principal */
+    .auth-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+
+    .auth-box {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      overflow: hidden;
+    }
+
+    .auth-header {
+      background: #00A82D;
+      color: white;
+      padding: 25px 30px;
+      text-align: center;
+    }
+
+    .auth-header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .auth-header p {
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    .auth-body {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #00A82D;
+      box-shadow: 0 0 0 3px rgba(0, 168, 45, 0.2);
+      outline: none;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #00A82D;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #008c24;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .auth-footer a {
+      color: #00A82D;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    /* Responsividade */
+    @media (max-width: 480px) {
+      .auth-box {
+        border-radius: 0;
+        box-shadow: none;
+      }
+      
+      .auth-header {
+        padding: 20px 15px;
+      }
+      
+      .auth-body {
+        padding: 20px 15px;
+      }
+      
+      .auth-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegação -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-laptop"></i> BH Notebooks
+      </a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#contato">Contato</a></li>
+          <li><a href="login-new.html" class="btn-login">Entrar</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="reset-password-container">
+    <div class="reset-password-card">
+      <div class="reset-password-header">
+        <h1><i class="fas fa-key"></i> Redefinir Senha</h1>
+        <p>Escolha uma nova senha para sua conta</p>
+      </div>
+      
+      <div class="reset-password-body">
+        <form id="resetForm">
+          <div class="form-group">
+            <label for="newPassword">Nova senha</label>
+            <div class="input-with-icon">
+              <input type="password" id="newPassword" class="form-control" required minlength="6" placeholder="Digite sua nova senha">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar senha</label>
+            <div class="input-with-icon">
+              <input type="password" id="confirmPassword" class="form-control" required minlength="6" placeholder="Confirme sua nova senha">
+              <i class="fas fa-lock"></i>
+            </div>
+            <span class="hint">Dica: use uma senha forte e evite reutilizar senhas de outros sites.</span>
+          </div>
+          
+          <button type="submit" class="btn" id="resetButton">
+            <span id="buttonText"><i class="fas fa-sync-alt"></i> Redefinir senha</span>
+          </button>
+        </form>
+        
+        <div class="back-to-login">
+          Lembrou sua senha? <a href="login-new.html">Fazer login</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Container para mensagens -->
+  <div id="messageContainer" class="message-container"></div>
+
+  <!-- Rodapé -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>BH Notebooks</h3>
+        <p>Soluções em manutenção de notebooks e desktops com qualidade e garantia.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contato</h3>
+        <p><i class="fas fa-phone"></i> (31) 98765-4321</p>
+        <p><i class="fas fa-envelope"></i> contato@bhnotebooks.com.br</p>
+      </div>
+      <div class="footer-section">
+        <h3>Redes Sociais</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BH Notebooks. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const resetForm = document.getElementById('resetForm');
+      const resetButton = document.getElementById('resetButton');
+      const buttonText = document.getElementById('buttonText');
+      const messageContainer = document.getElementById('messageContainer');
+      
+      // Função para exibir mensagens
+      function showMessage(message, type = 'info') {
+        messageContainer.textContent = message;
+        messageContainer.className = `message-container ${type} show`;
+        
+        // Remover a mensagem após 5 segundos
+        setTimeout(() => {
+          messageContainer.classList.remove('show');
+        }, 5000);
+      }
+      
+      // Verificar se há mensagens na URL (para redirecionamentos)
+      const urlParams = new URLSearchParams(window.location.search);
+      const message = urlParams.get('message');
+      const messageType = urlParams.get('type') || 'info';
+      const token = urlParams.get('token');
+      
+      if (message) {
+        showMessage(decodeURIComponent(message), messageType);
+        
+        // Limpar a URL sem recarregar a página
+        const cleanUrl = window.location.pathname + (token ? `?token=${token}` : '');
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+      
+      // Verificar se há um token na URL
+      if (!token) {
+        showMessage('Token de redefinição não encontrado. Por favor, acesse o link enviado para o seu e-mail.', 'error');
+        resetButton.disabled = true;
+      }
+      
+      // Manipular envio do formulário
+      resetForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        // Validação básica
+        if (newPassword.length < 6) {
+          showMessage('A senha deve ter no mínimo 6 caracteres.', 'error');
+          return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+          showMessage('As senhas não coincidem. Por favor, verifique novamente.', 'error');
+          return;
+        }
+        
+        try {
+          // Desabilitar botão e mostrar loading
+          resetButton.disabled = true;
+          buttonText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redefinindo...';
+          
+          // Enviar requisição para o servidor
+          const response = await fetch('/api/reset-password', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+              token: token,
+              newPassword: newPassword 
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.message || 'Erro ao redefinir senha');
+          }
+          
+          // Mostrar mensagem de sucesso e redirecionar
+          showMessage('Senha redefinida com sucesso! Redirecionando...', 'success');
+          
+          // Redirecionar após 2 segundos
+          setTimeout(() => {
+            window.location.href = 'login-new.html?message=Senha redefinida com sucesso!&type=success';
+          }, 2000);
+          
+        } catch (error) {
+          console.error('Erro ao redefinir senha:', error);
+          showMessage(error.message || 'Ocorreu um erro ao redefinir sua senha. Por favor, tente novamente.', 'error');
+          
+          // Reativar botão
+          resetButton.disabled = false;
+          buttonText.innerHTML = '<i class="fas fa-sync-alt"></i> Tentar novamente';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

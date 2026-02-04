@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento de Manutenção</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2e7d32;
+      --primary-light: #60ad5e;
+      --primary-dark: #005005;
+      --secondary-color: #ff8f00;
+      --accent-color: #ffd54f;
+      --light-gray: #f5f5f5;
+      --dark-gray: #333333;
+      --white: #ffffff;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-gray);
+      background-color: var(--light-gray);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background-color: var(--white);
+      box-shadow: var(--box-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .contact-info {
+      text-align: center;
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.1;
+      margin-left: 20px;
+    }
+
+    .contact-info a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .contact-info { display: none; }
+    }
+
+    .logo i {
+      margin-right: 10px;
+      color: var(--secondary-color);
+    }
+
+    /* Navigation */
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-left: 12px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--dark-gray);
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    nav ul li a:hover {
+      color: var(--primary-color);
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      bottom: -5px;
+      left: 0;
+      transition: var(--transition);
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 150px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-text {
+      flex: 1;
+      padding-right: 50px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--dark-gray);
+      margin-bottom: 20px;
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #555;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    .hero-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .shape {
+      position: absolute;
+      z-index: 1;
+    }
+
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--accent-color);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      top: -150px;
+      right: -100px;
+      opacity: 0.3;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--primary-light);
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      bottom: -50px;
+      left: -50px;
+      opacity: 0.2;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-20px) rotate(5deg);
+      }
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-text {
+        padding-right: 0;
+        margin-bottom: 50px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        margin: 0 auto 30px;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+    }
+
+    /* Services Section */
+    .services {
+      padding: 80px 0;
+      background-color: var(--white);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      color: var(--dark-gray);
+      margin-bottom: 15px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--primary-color);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .service-card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #eee;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card.featured {
+      border: 2px solid var(--primary-color);
+      position: relative;
+    }
+
+    .service-card.featured::before {
+      content: 'Mais Procurado';
+      position: absolute;
+      top: 15px;
+      right: -35px;
+      background: var(--primary-color);
+      color: white;
+      padding: 5px 35px;
+      transform: rotate(45deg);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .service-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(46, 125, 50, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .service-card h3 {
+      font-size: 1.5rem;
+      color: var(--dark-gray);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .service-card p {
+      color: #666;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .service-features {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .service-features li {
+      margin-bottom: 10px;
+      color: #555;
+      display: flex;
+      align-items: center;
+    }
+
+    .service-features i {
+      color: var(--primary-color);
+      margin-right: 10px;
+      font-size: 0.9rem;
+    }
+
+    .service-card .btn {
+      width: 100%;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    /* About / A empresa */
+    .about-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+
+    .about-content {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-image {
+      flex: 0 0 420px;
+      max-width: 420px;
+      background: #f7f7f7;
+      padding: 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      object-fit: contain;
+    }
+
+    .about-text {
+      flex: 1;
+    }
+
+    .about-text h2 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: var(--dark-gray);
+    }
+
+    .about-underline {
+      width: 60px;
+      height: 4px;
+      background: var(--primary-color);
+      margin: 14px 0 22px 0;
+      border-radius: 4px;
+    }
+
+    .about-text p {
+      color: #555;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .about-text h3 {
+      color: var(--dark-gray);
+      margin-top: 14px;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    @media (max-width: 768px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .service-card {
+        margin-bottom: 20px;
+      }
+      
+      .header-container {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .logo {
+        margin-bottom: 15px;
+      }
+
+      nav ul li {
+        margin: 0 10px;
+      }
+
+      .hero {
+        padding: 120px 0 80px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+      }
+    }
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    nav {
+      background: white;
+      padding: 15px 20px;
+      border-radius: var(--border-radius);
+      margin-bottom: 30px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+    }
+
+    nav a {
+      color: var(--dark-gray);
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 15px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: var(--light-gray);
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .box {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #resultadoCadastro,
+    #resultadoAgendamento {
+      margin-top: 15px;
+      padding: 12px 15px;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .success {
+      background-color: rgba(75, 181, 67, 0.1);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+    }
+
+    .error {
+      background-color: rgba(255, 51, 51, 0.1);
+      color: var(--error-color);
+      border: 1px solid var(--error-color);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 0 10px;
+      }
+      
+      nav a {
+        display: block;
+        margin: 5px 0;
+        padding: 8px 0;
+      }
+      
+      .box {
+        padding: 15px;
+      }
+      .about-content {
+        flex-direction: column;
+      }
+      .about-image {
+        max-width: 320px;
+        width: 100%;
+      }
+    }
+
+    /* Footer */
+    .site-footer {
+      background: var(--white);
+      border-top: 1px solid #eee;
+      padding: 24px 0;
+      color: #555;
+      margin-top: 40px;
+    }
+
+    .site-footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .site-footer .contact {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .site-footer .contact a { color: var(--primary-color); text-decoration: none; font-weight:600 }
+
+    .site-footer .copy { color: #888; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .site-footer .container { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // Verifica se o usuário está autenticado
+    (function() {
+      // Se estiver na página de login, cadastro ou recuperação, não faz nada
+      if (window.location.pathname.endsWith('login.html') || 
+          window.location.pathname.endsWith('cadastro.html') ||
+          window.location.pathname.endsWith('recuperar-senha.html')) {
+        return;
+      }
+      
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('token');
+      
+      // Se não estiver autenticado, redireciona para o login
+      if (!userId || !token) {
+        // Se já estiver na página inicial, não redireciona para evitar loop
+        if (!window.location.pathname.endsWith('index.html') && 
+            !window.location.pathname.endsWith('/')) {
+          const currentUrl = encodeURIComponent(window.location.pathname);
+          window.location.href = `login.html?returnUrl=${currentUrl}`;
+        }
+      } else if (window.location.pathname.endsWith('login.html')) {
+        // Se estiver logado e na página de login, redireciona para a página inicial
+        window.location.href = '/index.html';
+      }
+    })();
+  </script>
+  
+  <!-- Header -->
+  <header>
+    <div class="container header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-tools"></i>
+        <span>BH Notebooks</span>
+      </a>
+      
+      <nav>
+        <ul id="mainNav">
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#contato">Contato</a></li>
+          <li><a href="cadastro.html">Cadastro</a></li>
+          <li><a href="login-new.html" class="btn btn-outline">Login</a></li>
+          <li><a href="agendamento.html" class="btn btn-primary">Agendar Serviço</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Soluções em Manutenção de Computadores</h1>
+          <p>Serviços rápidos e de qualidade para manter seu equipamento em perfeito funcionamento.</p>
+          <div class="hero-buttons">
+            <a href="agendamento.html" class="btn btn-primary">Agendar Manutenção <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="assets/robot.jpg" alt="Robô BH Notebooks">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Decorative shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+  </section>
+
+  <!-- Serviços Section -->
+  <section class="services" id="servicos">
+    <div class="container">
+      <h2 class="section-title">Nossos Serviços</h2>
+      <p class="section-subtitle">Soluções completas para manutenção de computadores</p>
+      
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-tools"></i>
+          </div>
+          <h3>Manutenção Corretiva</h3>
+          <p>Solução para problemas existentes no seu computador, como lentidão, travamentos, vírus e falhas no sistema operacional.</p>
+          <ul class="service-features">
+            <li><i class="fas fa-check"></i> Remoção de vírus e malwares</li>
+            <li><i class="fas fa-check"></i> Reparo de hardware</li>
+            <li><i class="fas fa-check"></i> Recuperação de dados</li>
+            <li><i class="fas fa-check"></i> Formatação e instalação</li>
+          </ul>
+          
+        </div>
+
+        <div class="service-card featured">
+          <div class="service-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Manutenção Preventiva</h3>
+          <p>Cuidados preventivos para evitar problemas futuros e manter seu computador sempre em perfeito funcionamento.</p>
+          <ul class="service-features">
+            <li><i class="fas fa-check"></i> Limpeza interna e externa</li>
+            <li><i class="fas fa-check"></i> Atualização de sistema</li>
+            <li><i class="fas fa-check"></i> Otimização de desempenho</li>
+            <li><i class="fas fa-check"></i> Backup de segurança</li>
+          </ul>
+          
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-laptop-house"></i>
+          </div>
+          <h3>Serviços em Geral</h3>
+          <p>Soluções completas para todas as necessidades do seu computador e dispositivos eletrônicos.</p>
+          <ul class="service-features">
+            <li><i class="fas fa-check"></i> Montagem de computadores</li>
+            <li><i class="fas fa-check"></i> Atendimento remoto</li>
+            <li><i class="fas fa-check"></i> Configuração de redes</li>
+            <li><i class="fas fa-check"></i> Suporte técnico especializado</li>
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About / A empresa -->
+  <section class="about-section" id="sobre">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-image">
+          <!-- Substitua o src abaixo pela imagem do robô no seu projeto. Ex: backend/uploads/robot.png ou frontend/assets/robot.png -->
+          <img src="assets/robot.jpg" alt="Robô BH Notebooks" onerror="this.src='https://img.freepik.com/free-vector/robot-cartoon_1308-72927.jpg'">
+        </div>
+        <div class="about-text">
+          <h2>A empresa</h2>
+          <div class="about-underline"></div>
+          <p>O compromisso e a honestidade com o cliente tem nos tornado uma empresa reconhecida pela excelência no atendimento e ética profissional.</p>
+          <p>Temos como uma de nossas premissas a qualidade na execução dos nossos serviços, fato este comprovado pelos mais de 25 mil clientes atendidos e mais de 50 mil reparos realizados.</p>
+
+          <h3>Missão</h3>
+          <p>Oferecer um serviço de qualidade, buscando atender aos clientes com honestidade, eficiência e agilidade, garantindo tranquilidade e satisfação na prestação de serviços.</p>
+
+          <h3>Visão</h3>
+          <p>Tornar-se referência no mercado nacional como a principal assistência técnica de notebooks até 2025.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="contact">
+        <div class="address">Rua dos Timbiras, 2953 - Barro Preto, Belo Horizonte - MG, 30140-062</div>
+        <div class="phone"><a href="tel:+5531992210348">(31) 99221-0348</a></div>
+      </div>
+      <div class="copy">&copy; BH Notebooks — Todos os direitos reservados</div>
+    </div>
+  </footer>
+
+  <script>
+    // Atualiza navbar conforme estado de login
+    (function(){
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      // Mostrar mensagem de boas-vindas após login
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('login') === 'success') {
+        const userName = localStorage.getItem('userName');
+        if (userName) {
+          const welcomeMsg = document.createElement('div');
+          welcomeMsg.className = 'welcome-message';
+          welcomeMsg.textContent = `Bem-vindo(a) de volta, ${escapeHtml(userName)}!`;
+          welcomeMsg.style.cssText = 'background: #4CAF50; color: white; padding: 12px 20px; text-align: center; font-weight: 500;';
+          document.body.insertBefore(welcomeMsg, document.body.firstChild);
+          
+          // Remover o parâmetro da URL sem recarregar a página
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          
+          // Remover a mensagem após 5 segundos
+          setTimeout(() => {
+            welcomeMsg.style.transition = 'opacity 0.5s';
+            welcomeMsg.style.opacity = '0';
+            setTimeout(() => welcomeMsg.remove(), 500);
+          }, 5000);
+        }
+      }
+
+      const nav = document.getElementById('mainNav');
+      if (!nav) return;
+      const userId = localStorage.getItem('userId');
+      const userName = localStorage.getItem('userName');
+      if (userId) {
+        nav.innerHTML = `
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#contato">Contato</a></li>
+          <li class="user-greeting">
+            <i class="fas fa-user-circle" style="margin-right: 5px;"></i>
+            <span>${escapeHtml(userName)}</span>
+          </li>
+          <li><a href="agendamento.html" class="btn btn-primary">Agendar Serviço</a></li>
+          <li><button id="logoutBtn" class="btn btn-outline">Sair</button></li>
+        `;
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userName');
+            window.location.href = 'index.html';
+          });
+        }
+      }
+    })();
+
+    // Adiciona classe de scroll suave para links internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Adiciona classe de destaque ao menu ao rolar
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+      } else {
+        header.style.background = '#fff';
+        header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.05)';
+      }
+    });
+    // Botão de logout global: caso a navbar não tenha botão, adiciona floating
+    (function(){
+      try {
+        if (!localStorage.getItem('userId')) return;
+        if (document.getElementById('logoutBtn') || document.getElementById('globalLogoutBtn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'globalLogoutBtn';
+        btn.textContent = 'Sair';
+        Object.assign(btn.style, {
+          position: 'fixed', top: '12px', right: '12px', zIndex: 2000,
+          background: '#fff', border: '1px solid #ddd', padding: '8px 10px', borderRadius: '6px', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
+        });
+        btn.addEventListener('click', () => {
+          localStorage.removeItem('userId');
+          localStorage.removeItem('userName');
+          window.location.href = 'index.html';
+        });
+        document.body.appendChild(btn);
+      } catch (e) { console.error(e); }
+    })();
+  </script>
+</body>
+</html>

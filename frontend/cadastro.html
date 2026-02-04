@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - BH Notebooks</title>
+  <style>
+    /* Estilos para o sistema de notificações */
+    .message-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 15px 25px;
+      border-radius: 4px;
+      color: white;
+      font-weight: 500;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      max-width: 90%;
+      width: auto;
+    }
+    
+    .message-container.show {
+      opacity: 1;
+    }
+    
+    .message-container.error {
+      background-color: #f44336; /* Vermelho */
+    }
+    
+    .message-container.success {
+      background-color: #4CAF50; /* Verde */
+    }
+    
+    .message-container.warning {
+      background-color: #ff9800; /* Laranja */
+      color: #000;
+    }
+    
+    .message-container.info {
+      background-color: #2196F3; /* Azul */
+    }
+    
+    /* Animações */
+    @keyframes slideIn {
+      from { transform: translate(-50%, -30px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    
+    .message-container.show {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+  </style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Estilos da barra de navegação */
+    .navbar {
+      width: 100%;
+      background-color: #00A82D;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    
+    .navbar-logo:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* Formulário */
+    .form-container {
+      background: white;
+      padding: 50px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .form-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #00A82D;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .form-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1em;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #00A82D;
+      box-shadow: 0 0 0 3px rgba(0, 168, 45, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #999;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: #00A82D;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: #008a25;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 168, 45, 0.3);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+      font-size: 0.95em;
+    }
+
+    .login-link a {
+      color: #00A82D;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .login-link a:hover {
+      color: #008a25;
+      text-decoration: underline;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 30px 20px;
+      }
+
+      .form-title {
+        font-size: 1.8em;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegação -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">BH Notebooks</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Formulário -->
+    <div class="form-container">
+      <h1 class="form-title">Cadastro de Cliente</h1>
+      <p class="form-subtitle">Crie sua conta e comece a agendar manutenções</p>
+
+      <form id="formCadastro">
+        <div class="form-group">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="documento">CPF ou CNPJ</label>
+          <input type="text" id="documento" name="documento" placeholder="Digite seu CPF ou CNPJ" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cep">CEP</label>
+          <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required>
+        </div>
+
+        <div class="form-group">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço completo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bairro">Bairro</label>
+          <input type="text" id="bairro" name="bairro" placeholder="Digite seu bairro" required>
+        </div>
+
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <input type="text" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Cadastrar</button>
+      </form>
+
+      <div class="login-link">
+        Já tem uma conta? <a href="login.html">Faça login aqui</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Máscara para CEP
+    document.getElementById("cep").addEventListener("input", function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 8) {
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value;
+      }
+    });
+
+    // Busca endereço pelo CEP
+    document.getElementById("cep").addEventListener("blur", async function(e) {
+      const cep = e.target.value.replace(/\D/g, '');
+      if (cep.length === 8) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+          const data = await response.json();
+          
+          if (!data.erro) {
+            document.getElementById("endereco").value = data.logradouro || '';
+            document.getElementById("bairro").value = data.bairro || '';
+            document.showNotification("Endereço preenchido automaticamente!", 'success');
+          } else {
+            document.showNotification("CEP não encontrado. Por favor, preencha o endereço manualmente.", 'warning');
+          }
+        } catch (error) {
+          console.error("Erro ao buscar CEP:", error);
+          document.showNotification("Erro ao buscar CEP. Verifique sua conexão.", 'error');
+        }
+      }
+    });
+
+    // Formulário
+    document.getElementById("formCadastro").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('.btn-submit');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Cadastrando...';
+      submitBtn.disabled = true;
+      
+      try {
+        const dados = Object.fromEntries(new FormData(e.target));
+
+        const resp = await fetch("http://localhost:3000/cadastro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados)
+        });
+
+        const json = await resp.json();
+        
+        if (resp.ok) {
+          const successMsg = json.mensagem || "Cadastro realizado com sucesso! Verifique seu e-mail para confirmar o cadastro.";
+          console.log('Sucesso:', successMsg);
+          document.showNotification(successMsg, 'success');
+          e.target.reset();
+          // Redireciona para login após 3 segundos
+          setTimeout(() => {
+            window.location.href = "login.html?message=" + 
+              encodeURIComponent("Cadastro realizado com sucesso! Faça login para continuar.") + 
+              "&messageType=success";
+          }, 3000);
+        } else {
+          const errorMsg = json.erro || "Erro ao cadastrar. Verifique os dados e tente novamente.";
+          console.error('Erro:', errorMsg);
+          throw new Error(errorMsg);
+        }
+      } catch (erro) {
+        console.error("Erro ao cadastrar:", erro);
+        document.showNotification(erro.message || "Erro ao conectar com o servidor. Verifique sua conexão e tente novamente.", 'error');
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+  <script>
+    // Inicializa o sistema de notificações se ainda não estiver definido
+    (function() {
+      // Verifica se já existe uma implementação
+      if (typeof document.showNotification === 'function') return;
+      
+      // Implementação do sistema de notificações
+      document.showNotification = function(message, type = 'info', duration = 5000) {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        
+        // Cria o container se não existir
+        let container = document.getElementById('messageContainer');
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'messageContainer';
+          document.body.appendChild(container);
+        }
+        
+        // Cria a mensagem
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message-container ${type}`;
+        messageDiv.textContent = message;
+        
+        // Adiciona a mensagem ao container
+        container.innerHTML = ''; // Limpa mensagens anteriores
+        container.appendChild(messageDiv);
+        
+        // Mostra a mensagem
+        setTimeout(() => messageDiv.classList.add('show'), 10);
+        
+        // Remove a mensagem após a duração
+        if (duration > 0) {
+          setTimeout(() => {
+            messageDiv.classList.remove('show');
+            setTimeout(() => messageDiv.remove(), 300);
+          }, duration);
+        }
+        
+        // Retorna função para fechar a mensagem manualmente
+        return () => {
+          messageDiv.classList.remove('show');
+          setTimeout(() => messageDiv.remove(), 300);
+        };
+      };
+    })();
+    
+    // Mostra mensagens da URL quando a página carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const message = urlParams.get('message');
+      const messageType = urlParams.get('messageType') || 'info';
+      
+      if (message) {
+        document.showNotification(decodeURIComponent(message), messageType);
+        
+        // Limpa a URL sem recarregar a página
+        const cleanUrl = window.location.pathname + window.location.search
+          .replace(/[?&]message=[^&]+/g, '')
+          .replace(/[?&]messageType=[^&]+/g, '')
+          .replace(/^&/, '?')
+          .replace(/[?&]$/, '');
+        
+        window.history.replaceState({}, document.title, cleanUrl || window.location.pathname);
+      }
+    });
+    
+    (function(){
+      try {
+        if (!localStorage.getItem('userId')) return;
+        if (document.getElementById('logoutBtn') || document.getElementById('globalLogoutBtn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'globalLogoutBtn';
+        btn.textContent = 'Sair';
+        Object.assign(btn.style, {
+          position: 'fixed', top: '12px', right: '12px', zIndex: 2000,
+          background: '#fff', border: '1px solid #ddd', padding: '8px 10px', borderRadius: '6px', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
+        });
+        btn.addEventListener('click', () => {
+          localStorage.removeItem('userId');
+          localStorage.removeItem('userName');
+          window.location.href = 'index.html';
+        });
+        document.body.appendChild(btn);
+      } catch (e) { console.error(e); }
+    })();
+  </script>
+</body>
+</html>

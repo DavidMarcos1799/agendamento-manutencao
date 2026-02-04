@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar Senha - BH Notebooks</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Barra de navegação */
+    .navbar {
+      width: 100%;
+      background-color: #00A82D;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+    }
+    
+    .navbar-logo:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Estilos do card de recuperação */
+    .auth-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 540px;
+    }
+
+    h1 {
+      color: #00A82D;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00A82D;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background: #008c24;
+    }
+
+    button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegação -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">BH Notebooks</a>
+    </div>
+  </nav>
+
+  <!-- Container principal -->
+  <div class="auth-container">
+    <div class="card">
+      <h1>Recuperar senha</h1>
+      <p>Digite seu e-mail cadastrado. Enviaremos um link para redefinir sua senha.</p>
+      <form id="formRecuperar">
+        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        <button type="submit">Enviar link de recuperação</button>
+      </form>
+      <div id="msg" style="margin-top:12px;text-align:center;color:#666"></div>
+      <div style="margin-top:8px;text-align:center;color:#666">Lembrou a senha? <a href="login.html" style="color:#00A82D;text-decoration:none">Fazer login</a></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('formRecuperar').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const msgEl = document.getElementById('msg');
+      const original = btn.textContent;
+      btn.textContent = 'Enviando...'; btn.disabled = true;
+      msgEl.textContent = '';
+      try {
+        const email = document.getElementById('email').value;
+        const resp = await fetch('http://localhost:3000/recuperar-senha', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email })
+        });
+        let json = {};
+        try { json = await resp.json(); } catch (e) { /* ignore JSON parse errors */ }
+        if (resp.ok) {
+          msgEl.style.color = '#2e7d32';
+          msgEl.textContent = json.mensagem || 'Se o e-mail estiver cadastrado, você receberá instruções.';
+          e.target.reset();
+        } else {
+          msgEl.style.color = 'crimson';
+          msgEl.textContent = json.erro || 'Erro ao solicitar recuperação de senha.';
+        }
+      } catch (err) {
+        console.error(err);
+        msgEl.style.color = 'crimson';
+        msgEl.innerHTML = 'Erro ao conectar com o servidor. Verifique se o backend está rodando em <code>http://localhost:3000</code> e tente novamente.';
+      } finally { btn.textContent = original; btn.disabled = false; }
+    });
+  </script>
+</body>
+</html>

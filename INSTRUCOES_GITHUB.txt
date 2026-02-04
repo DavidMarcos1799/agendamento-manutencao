@@ -1,0 +1,173 @@
+================================================================================
+                    🚀 COMO ENVIAR O PROJETO PARA O GITHUB
+================================================================================
+
+📋 PASSO A PASSO COMPLETO - FÁCIL E RÁPIDO
+================================================================================
+
+1️⃣  PREPARAÇÃO DO AMBIENTE
+================================================================================
+
+✅ Verifique se o Git está instalado:
+   - Abra o terminal (CMD ou PowerShell)
+   - Digite: git --version
+   - Se não tiver, instale em: https://git-scm.com/
+
+✅ Tenha uma conta no GitHub:
+   - Acesse: https://github.com
+   - Crie sua conta gratuita
+   - Confirme seu email
+
+================================================================================
+
+2️⃣  CRIANDO O REPOSITÓRIO NO GITHUB
+================================================================================
+
+1. Acesse: https://github.com
+2. Clique no "+" no canto superior direito
+3. Selecione "New repository"
+4. Preencha:
+   - Repository name: agendamento-manutencao
+   - Description: Sistema de Agendamento de Manutenção
+   - Marque: Public (ou Private se preferir)
+   - NÃO marque: "Add a README file" (já temos um)
+   - NÃO marque: "Add .gitignore" (já temos um)
+5. Clique em "Create repository"
+6. Copie a URL que aparece (ex: https://github.com/seu-usuario/agendamento-manutencao.git)
+
+================================================================================
+
+3️⃣  CONFIGURANDO O GIT LOCALMENTE
+================================================================================
+
+Abra o terminal na pasta do projeto:
+cd C:\Users\Daiane\Documents\OneDrive\Documentos\Faculdade\agendamento-manutenção
+
+Execute os comandos:
+
+# 1. Inicializa o repositório
+git init
+
+# 2. Configura seu nome (substitua pelo seu nome)
+git config user.name "Seu Nome Completo"
+
+# 3. Configura seu email (substitua pelo seu email do GitHub)
+git config user.email "seu-email@exemplo.com"
+
+================================================================================
+
+4️⃣  ENVIANDO ARQUIVOS PARA O GITHUB
+================================================================================
+
+# 1. Adiciona todos os arquivos
+git add .
+
+# 2. Cria o primeiro commit
+git commit -m "🚀 Initial commit: Sistema de Agendamento de Manutenção"
+
+# 3. Adiciona o repositório remoto (substitua pela sua URL)
+git remote add origin https://github.com/seu-usuario/agendamento-manutencao.git
+
+# 4. Envia os arquivos para o GitHub
+git push -u origin main
+
+Se pedir usuário e senha:
+- Usuario: seu email do GitHub
+- Senha: use seu Personal Access Token (não sua senha normal)
+
+================================================================================
+
+5️⃣  CRIANDO PERSONAL ACCESS TOKEN (SE NECESSÁRIO)
+================================================================================
+
+1. Acesse: https://github.com
+2. Clique no seu perfil → Settings
+3. Menu lateral: Developer settings → Personal access tokens → Tokens (classic)
+4. Clique em "Generate new token"
+5. Preencha:
+   - Note: Token para agendamento-manutencao
+   - Expiration: 90 days
+   - Scopes: Marque "repo" (todos os itens de repo)
+6. Clique em "Generate token"
+7. **COPIE O TOKEN** (ele não aparecerá novamente!)
+8. Use este token como senha no git push
+
+================================================================================
+
+6️⃣  VERIFICANDO O ENVIO
+================================================================================
+
+1. Acesse seu repositório no GitHub
+2. Você deve ver todos os arquivos do projeto
+3. O README.md aparecerá na página principal
+4. Parabéns! 🎉 Seu projeto está no GitHub!
+
+================================================================================
+
+7️⃣  COMANDOS ÚTEIS
+================================================================================
+
+# Ver status dos arquivos
+git status
+
+# Ver commits
+git log --oneline
+
+# Ver branches
+git branch
+
+# Enviar alterações futuras
+git add .
+git commit -m "descrição da alteração"
+git push
+
+# Puxar alterações do GitHub
+git pull
+
+================================================================================
+
+8️⃣  ESTRUTURA ENVIADA
+================================================================================
+
+Seu projeto no GitHub terá:
+✅ README.md - Documentação completa
+✅ .gitignore - Arquivos ignorados
+✅ backend/ - Servidor Node.js
+✅ frontend/ - Interface web
+✅ css/ - Estilos
+✅ js/ - JavaScript
+✅ Todas as páginas HTML
+✅ Scripts de banco de dados
+
+================================================================================
+
+9️⃣  DICAS IMPORTANTES
+================================================================================
+
+🔒 NUNCA envie senhas ou dados sensíveis
+📁 O .gitignore já protege arquivos desnecessários
+🔄 Sempre faça commit antes de push
+📝 Use mensagens de commit claras
+🎯 Mantenha o README atualizado
+
+================================================================================
+
+🎉 PARABÉNS! SEU PROJETO ESTÁ NO GITHUB! 🎉
+
+Agora você pode:
+- Compartilhar o link com qualquer pessoa
+- Colaborar com outros desenvolvedores
+- Usar como portfólio
+- Fazer deploy automático
+- Ter backup seguro do seu código
+
+================================================================================
+                    CONTATO E SUPORTE
+================================================================================
+
+Se tiver dificuldades:
+- GitHub Docs: https://docs.github.com
+- Git Docs: https://git-scm.com/doc
+- Email: suporte@exemplo.com
+
+================================================================================

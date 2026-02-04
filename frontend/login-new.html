@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - BH Notebooks</title>
+  <style>
+    /* Estilos para o sistema de notificações */
+    .message-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 15px 25px;
+      border-radius: 4px;
+      color: white;
+      font-weight: 500;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      max-width: 90%;
+      width: auto;
+    }
+    
+    .message-container.show {
+      opacity: 1;
+      animation: slideIn 0.3s ease-out forwards;
+    }
+    
+    .message-container.error {
+      background-color: #f44336; /* Vermelho */
+    }
+    
+    .message-container.success {
+      background-color: #4CAF50; /* Verde */
+    }
+    
+    .message-container.warning {
+      background-color: #ff9800; /* Laranja */
+      color: #000;
+    }
+    
+    .message-container.info {
+      background-color: #2196F3; /* Azul */
+    }
+    
+    /* Animações */
+    @keyframes slideIn {
+      from { transform: translate(-50%, -30px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Barra de navegação */
+    .navbar {
+      width: 100%;
+      background-color: #00A82D;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+    }
+    
+    .navbar-logo:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .navbar-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Container principal */
+    .auth-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    
+    .auth-box {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .auth-logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+    }
+    
+    .auth-title {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .auth-subtitle {
+      color: #666;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #444;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #00A82D;
+      box-shadow: 0 0 0 3px rgba(0, 168, 45, 0.1);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #00A82D;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #008a25;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .form-footer {
+      margin-top: 25px;
+      text-align: center;
+    }
+    
+    .form-footer p {
+      margin-top: 15px;
+      color: #666;
+    }
+    
+    .form-footer a {
+      color: #00A82D;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      color: #f44336;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .auth-box {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .auth-title {
+        font-size: 1.5rem;
+      }
+      
+      .navbar-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegação simplificada -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">BH Notebooks</a>
+    </div>
+  </nav>
+
+  <!-- Container principal -->
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6H20V18H4V6Z" fill="#00A82D"/>
+          <path d="M12 2L4 6V18L12 22L20 18V6L12 2Z" fill="#00A82D" fill-opacity="0.2"/>
+        </svg>
+        <h1 class="auth-title">Bem-vindo de volta</h1>
+        <p class="auth-subtitle">Faça login para acessar sua conta</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="documento" class="form-label">CPF ou CNPJ</label>
+          <input type="text" id="documento" class="form-control" placeholder="Digite seu CPF ou CNPJ" required>
+          <div id="documentoError" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Senha</label>
+          <input type="password" id="password" class="form-control" placeholder="Digite sua senha" required>
+          <div id="passwordError" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn" id="loginButton">
+            <span id="buttonText">Entrar</span>
+            <span id="buttonSpinner" style="display: none;">Aguarde...</span>
+          </button>
+        </div>
+
+        <div class="form-footer">
+          <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+          <p><a href="recuperar-senha.html">Esqueceu sua senha?</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="notification" class="message-container" style="display: none;"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const loginButton = document.getElementById('loginButton');
+      const buttonText = document.getElementById('buttonText');
+      const buttonSpinner = document.getElementById('buttonSpinner');
+      const notification = document.getElementById('notification');
+      
+      // Form submission
+      loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Reset errors and notifications
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        notification.className = 'message-container';
+        notification.style.display = 'none';
+        notification.textContent = '';
+        
+        // Get form data
+        const documento = document.getElementById('documento').value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        const password = document.getElementById('password').value;
+        
+        // Validate inputs
+        if (!documento) {
+          showError('documentoError', 'Por favor, informe seu CPF ou CNPJ');
+          return;
+        }
+        
+        // Validar formato do CPF (11 dígitos) ou CNPJ (14 dígitos)
+        if (documento.length !== 11 && documento.length !== 14) {
+          showError('documentoError', 'CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos');
+          return;
+        }
+        
+        if (!password) {
+          showError('passwordError', 'Por favor, informe sua senha');
+          return;
+        }
+        
+        // Disable button and show loading
+        loginButton.disabled = true;
+        buttonText.style.display = 'none';
+        buttonSpinner.style.display = 'inline-block';
+        
+        try {
+          // Simular requisição de login
+          console.log('Enviando requisição de login...', { documento });
+          
+          // Aqui você faria a chamada real para a API
+          // const response = await fetch('http://localhost:3000/login', {
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          //   body: JSON.stringify({ 
+          //     documento: documento, // CPF ou CNPJ (apenas números)
+          //     senha: password
+          // })
+          // });
+          
+          // Simulando resposta após 1 segundo
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Fazer a chamada real para a API de login
+          const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              documento: documento,
+              senha: password
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (result && result.sucesso) {
+            // Salvar dados do usuário no localStorage
+            localStorage.setItem('userId', result.userId);
+            localStorage.setItem('userName', result.nome);
+            localStorage.setItem('userEmail', result.email);
+            
+            // Mostrar mensagem de sucesso com o nome do usuário
+            showNotification(`Bem-vindo(a) de volta, ${result.nome}!`, 'success');
+            
+            // Redirecionar após 1.5 segundos para dar tempo de ver a mensagem
+            setTimeout(() => {
+              window.location.href = 'index.html?login=success';
+            }, 1500);
+          } else {
+            // Usar a mensagem de erro do backend se existir, senão usar mensagem padrão
+            const errorMessage = result && result.erro ? result.erro : 'Dados incorretos.';
+            throw new Error(errorMessage);
+          }
+          
+        } catch (error) {
+          console.error('Erro no login:', error);
+          
+          // Usar a mensagem de erro do backend ou do catch
+          let errorMessage = error.message || 'Dados incorretos.';
+          
+          // Verificar se é um erro de rede
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
+          }
+          
+          console.log('Mensagem que será exibida:', errorMessage);
+          showNotification(errorMessage, 'error');
+        } finally {
+          // Re-enable button
+          loginButton.disabled = false;
+          buttonText.style.display = 'inline-block';
+          buttonSpinner.style.display = 'none';
+        }
+      });
+      
+      // Helper functions
+      function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.textContent = message;
+          element.style.display = 'block';
+        }
+      }
+      
+      function showNotification(message, type = 'error') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `message-container ${type} show`;
+        notification.style.display = 'block';
+        
+        console.log('Notificação exibida:', message, 'Tipo:', type);
+        
+        // Esconder notificação após 5 segundos
+        setTimeout(() => {
+          notification.className = 'message-container';
+          notification.style.display = 'none';
+        }, 5000);
+      }
+      
+      // Verificar se há mensagens na URL (para redirecionamentos)
+      const urlParams = new URLSearchParams(window.location.search);
+      const message = urlParams.get('message');
+      const messageType = urlParams.get('type') || 'info';
+      
+      if (message) {
+        showNotification(decodeURIComponent(message), messageType);
+      }
+    });
+  </script>
+</body>
+</html>

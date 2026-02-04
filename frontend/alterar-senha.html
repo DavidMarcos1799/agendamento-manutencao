@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar Senha</title>
+  <style>
+    body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg,#f8f9fa 0%,#fff 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px}
+    .card{background:#fff;padding:40px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);width:100%;max-width:540px}
+    h1{color:#00A82D;margin-bottom:6px}
+    p{color:#666;margin-bottom:18px}
+    input{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;margin-bottom:12px}
+    button{width:100%;padding:12px;background:#00A82D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Redefinir senha</h1>
+    <p>Defina uma nova senha para sua conta.</p>
+    <form id="formRedefinir">
+      <input type="password" id="senha" name="senha" placeholder="Nova senha" required minlength="6">
+      <input type="password" id="confirma" name="confirma" placeholder="Confirme a nova senha" required minlength="6">
+      <button type="submit">Redefinir senha</button>
+    </form>
+    <div style="margin-top:12px;text-align:center;color:#666">Voltar ao <a href="login.html" style="color:#00A82D;text-decoration:none">login</a></div>
+  </div>
+
+  <script>
+    function getQueryParam(name){
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    document.getElementById('formRedefinir').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const original = btn.textContent;
+      btn.textContent = 'Redefinindo...'; btn.disabled = true;
+
+      const senha = document.getElementById('senha').value;
+      const confirma = document.getElementById('confirma').value;
+      if (senha !== confirma) { alert('As senhas não coincidem.'); btn.textContent = original; btn.disabled = false; return; }
+
+      const token = getQueryParam('token');
+      if (!token) { alert('Token não informado. Abra o link enviado por e-mail.'); btn.textContent = original; btn.disabled = false; return; }
+
+      try {
+        const resp = await fetch('/reset-password', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ token, senha })
+        });
+        const json = await resp.json();
+        if (resp.ok) {
+          alert(json.mensagem || 'Senha redefinida com sucesso.');
+          window.location.href = 'login.html';
+        } else {
+          alert(json.erro || 'Erro ao redefinir senha.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao redefinir senha.');
+      } finally { btn.textContent = original; btn.disabled = false; }
+    });
+  </script>
+</body>
+</html>
