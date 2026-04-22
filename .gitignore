@@ -63,7 +63,3 @@ backend/uploads/
 test-results/
 coverage/
 
-# Subdiretórios que são repositórios Git separados
-AtividadePratica/
-SistemaBHnotebooks/
-cinema-plus/
