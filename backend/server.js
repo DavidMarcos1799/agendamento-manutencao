@@ -103,14 +103,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Conexão com MySQL
+// Conexão com MySQL usando pool
 let db;
 try {
-  db = await mysql.createConnection({
+  db = await mysql.createPool({
     host: "localhost",
     user: "root",
     password: "",
     database: "agendamento_pc",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
   });
   console.log("Conectado ao MySQL com sucesso!");
   
@@ -285,6 +288,9 @@ app.get("/", (req, res) => {
 // ----------------------
 app.post("/cadastro", async (req, res) => {
   try {
+    console.log("=== INICIANDO CADASTRO ===");
+    console.log("Body recebido:", req.body);
+    
     const { nome, documento, cep, endereco, bairro, telefone, email, senha } = req.body;
 
     console.log("=== DADOS RECEBIDOS NO CADASTRO ===");
@@ -293,6 +299,9 @@ app.post("/cadastro", async (req, res) => {
     console.log("Documento (trim):", documento ? documento.trim() : "vazio");
     console.log("Email:", email);
     console.log("Telefone:", telefone);
+    console.log("CEP:", cep);
+    console.log("Endereço:", endereco);
+    console.log("Bairro:", bairro);
 
     if (!nome || !documento || !cep || !endereco || !bairro || !telefone || !email || !senha) {
       return res.status(400).json({ erro: "Todos os campos são obrigatórios (incluindo CEP e bairro)." });
