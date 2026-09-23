@@ -2,7 +2,13 @@
 
 // Carregar variáveis de ambiente do arquivo .env
 import dotenv from "dotenv";
-dotenv.config();
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: join(__dirname, '.env') });
 
 import express from "express";
 import mysql from "mysql2/promise";
@@ -10,13 +16,8 @@ import bcrypt from "bcrypt";
 import cors from "cors";
 import multer from "multer";
 import fs from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -190,6 +191,10 @@ function gerarTokenConfirmacao() {
 
 // Função para enviar e-mail de confirmação
 async function enviarEmailConfirmacao(email, nome, token) {
+  console.log("=== INICIANDO ENVIO DE E-MAIL ===");
+  console.log("Para:", email);
+  console.log("Transporter configurado:", !!transporter);
+  
   if (!transporter) {
     console.log("⚠ E-mail não enviado: serviço de e-mail não configurado");
     return false;
